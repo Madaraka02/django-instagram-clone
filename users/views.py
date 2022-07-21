@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from .forms import *
+from .models import *
 
 # Create your views here.
 
@@ -30,19 +31,50 @@ def registerView(request):
     context={
         'form':form,
     }   
-    return render(request, 'registration/registration.html', context)     
+    return render(request, 'registration/registration.html', context)   
 
-def follow(request, pk):
-    # get profile using id
-    # profile.followers.add(request.user)
-    # redirect
-    pass
+def userProfile(request, id):
 
-def unfollow(request, pk):
-    # get profile using id
-    # profile.followers.remove(request.user)
-    # redirect
-    pass
+    profile = get_object_or_404(Profile, id=id)
+
+    followers = profile.followers.all()
+    no_of_followers = len(followers)
+
+
+
+    if len(followers) == 0:
+        is_following = False
+
+    for follower in followers:
+        if follower == request.user:
+            is_following=True
+            break
+        else:
+            is_following=False
+
+
+    user = profile.user
+
+    context = {
+        'profile':profile,
+        'user':user,
+        'no_of_followers':no_of_followers,
+        'is_following':is_following,
+    }
+    return render(request, 'Posts/profile.html', context)      
+
+def follow(request, id):
+
+    profile = get_object_or_404(Profile, id=id)
+    profile.followers.add(request.user)
+    return redirect('profile', profile.id)
+    
+
+def unfollow(request, id):
+
+    profile = get_object_or_404(Profile, id=id)
+    profile.followers.remove(request.user)
+    return redirect('profile', profile.id)
 
 def profile(request, pk):
     # get profile of current using pk
