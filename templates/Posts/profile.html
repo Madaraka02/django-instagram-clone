@@ -41,6 +41,10 @@
                                 <i class="fa-solid fa-pen"></i>
                               </button>
 
+                              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal">
+                                Create Post
+                              </button>
+
                         {% else %}  
                             {% if profile.image %}
                                 <img src="{{profile.image.url}}" class="rounded-circle" width="50" height="50" alt="">
@@ -73,6 +77,25 @@
             <div class="col-md-2"></div>
         </div>
     </div>
+    {% if posts %}
+    <div class="container mt-2 mb-2">
+        <div class="row mt-2 mb-2">
+            {% for post in posts %}
+            <div class="col-md-3">
+            <div class="card mt-2 mb-2">
+                <img src="{{post.image.url}}"  class="card-img-top" width="150" height="100" alt="">
+
+                <div class="card-body"></div>
+            </div>
+        </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% else %}
+    <p class="mt-2 mb-2">You don't have any posts</p>
+    {% endif %}
+
     <!-- Button trigger modal -->
 
   
@@ -96,6 +119,26 @@
     </div>
   </div>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{postf|crispy}}
+                    <button class="btn btn-primary mt-2" type="submit">save</button>
+    
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
    
     
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>

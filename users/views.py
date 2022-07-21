@@ -3,6 +3,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from .forms import *
 from .models import *
+from posts.models import *
+from posts.forms import *
+
 
 # Create your views here.
 
@@ -35,6 +38,8 @@ def registerView(request):
 
 def userProfile(request, id):
     profile = get_object_or_404(Profile, id=id)
+    posts = Post.objects.filter(author=profile.user).order_by('-id')
+
 
     form = ProfileForm(instance=profile)
     if request.method == 'POST':
@@ -45,7 +50,14 @@ def userProfile(request, id):
             prof.save()
             return redirect('profile', id=id)
 
-
+    postf = PostForm()
+    if request.method == 'POST':
+        postf = PostForm(request.POST, request.FILES)
+        if postf.is_valid():
+            post_item = form.save()
+            post_item.author = request.user
+            post_item.save()
+            return redirect('profile', id=id)
 
 
     followers = profile.followers.all()
@@ -72,6 +84,8 @@ def userProfile(request, id):
         'no_of_followers':no_of_followers,
         'is_following':is_following,
         'form':form,
+        'posts':posts,
+        'postf':postf
     }
     return render(request, 'Posts/profile.html', context)      
 
