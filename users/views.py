@@ -34,8 +34,19 @@ def registerView(request):
     return render(request, 'registration/registration.html', context)   
 
 def userProfile(request, id):
-
     profile = get_object_or_404(Profile, id=id)
+
+    form = ProfileForm(instance=profile)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            prof = form.save(commit = False)
+            prof.user = request.user
+            prof.save()
+            return redirect('profile', id=id)
+
+
+
 
     followers = profile.followers.all()
     no_of_followers = len(followers)
@@ -60,6 +71,7 @@ def userProfile(request, id):
         'user':user,
         'no_of_followers':no_of_followers,
         'is_following':is_following,
+        'form':form,
     }
     return render(request, 'Posts/profile.html', context)      
 

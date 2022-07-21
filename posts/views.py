@@ -1,8 +1,14 @@
 from django.shortcuts import render
+from users.models import *
 
 # Create your views here.
 def home(request):
-    return render(request, 'Posts/index.html')
+    profiles = Profile.objects.all()
+
+    context ={
+        'profiles':profiles
+    }
+    return render(request, 'Posts/index.html', context)
 
 
 def postdetail(request, id):
