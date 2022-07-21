@@ -39,6 +39,19 @@
                     <div class="card-body">
                         <p class="card-text">{{post.title}}</p>
                         <a style="text-decoration:none" href="{% url 'profile' post.author.profile.id %}" class="card-text">by {{post.author.profile.user.username}}</a>
+                       
+                            <form method=post action={% url 'like' post.id %}> 
+                                {% csrf_token  %}
+                                <input type=hidden name=next value={{request.path}}/>
+                                <button type="submit" class="btn btn-sm"><i class="fa fa-thumbs-up"></i> {{post.likes.all.count}}</button>
+                                </form>
+
+                                <form method=post action={% url 'dislike' post.id %} > 
+                                    {% csrf_token  %}
+                                    <input type=hidden name=next value={{request.path}}/>
+                                    <button type="submit" class="btn btn-sm"><i class="fa fa-thumbs-down"></i> </button>{{post.dislikes.all.count}}
+                                    </form>
+                      
                     </div>
                 </div>
                 {% endfor %}
@@ -53,6 +66,7 @@
                             {% endif %}
                             <a style="text-decoration: none;" href="{% url 'profile' profile.id %}">@{{profile.user.username}}</a>
                         </div>
+
                         </div>
                     </div>
 
@@ -61,7 +75,6 @@
             </div>
         </div>
     </div>
-
 
 
     
