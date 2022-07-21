@@ -1,12 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from users.models import *
+from .forms import *
+from .models import *
 
 # Create your views here.
 def home(request):
-    profiles = Profile.objects.all()
+    profiles = Profile.objects.all().order_by('-id')[:10]
+    posts = Post.objects.all().order_by('-id')
+
+
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save()
+            post.author = request.user
+            post.save()
+            return redirect('home')
+
 
     context ={
-        'profiles':profiles
+        'profiles':profiles,
+        'form':form,
+        'posts':posts,
     }
     return render(request, 'Posts/index.html', context)
 

@@ -43,13 +43,14 @@
 
                         {% else %}  
                             {% if profile.image %}
-                                <img src="{{profile.image.url}}" class="img-rounded-circle" width="50" height="50" alt="">
+                                <img src="{{profile.image.url}}" class="rounded-circle" width="50" height="50" alt="">
                             {% endif %}
                             {% if profile.bio %}
                                 <p class="card-text">{{profile.bio}}</span></p>
                             {% endif %}
                             <p class="card-text">{{profile.user.username}}</span></p>
                             <p class="card-text"> {{no_of_followers}}<span> followers</span></p>
+                            {% if request.user.is_authenticated %}
                             {% if is_following %} 
                                 <form method="post" action={% url 'unfollow' profile.id %}> 
                                     {% csrf_token %} 
@@ -60,6 +61,7 @@
                                     {% csrf_token %} 
                                     <button class="btn btn-primary" type="submit">Follow</button>
                                 </form>
+                            {% endif %} 
                             {% endif %}    
 
 
